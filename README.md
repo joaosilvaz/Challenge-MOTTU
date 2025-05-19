@@ -1,4 +1,4 @@
-# 🛵 CP2 - API de Usuários para Aluguel de Motos Mottu
+# 🛵 Challenge - API de Usuários para Aluguel de Motos Mottu
 
 Este projeto foi desenvolvido como parte da avaliação CP2 da disciplina de Desenvolvimento Web com ASP.NET Core. O objetivo é construir uma **API RESTful para gerenciamento de usuários da empresa Mottu**, permitindo o cadastro, consulta, atualização e exclusão de perfis. Esses usuários irão utilizar o sistema para **realizar o aluguel de motos**.
 
