@@ -1,0 +1,6 @@
+@Challenge_MOTTU_HostAddress = http://localhost:5068
+
+GET {{Challenge_MOTTU_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
