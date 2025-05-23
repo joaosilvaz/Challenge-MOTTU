@@ -66,11 +66,11 @@ json
 
 ## 📦 Códigos de Resposta HTTP
 Código	Descrição
-200	OK (requisição bem-sucedida)
-201	Created (recurso criado)
-204	No Content (sem conteúdo)
-400	Bad Request (erro na requisição)
-404	Not Found (recurso não encontrado)
+- 200	OK (requisição bem-sucedida)
+- 201	Created (recurso criado)
+- 204	No Content (sem conteúdo)
+- 400	Bad Request (erro na requisição)
+- 404	Not Found (recurso não encontrado)
 
 ## 🚀 Instalação e Execução
 Clone o repositório:
@@ -86,6 +86,6 @@ Acesse a documentação Swagger para testar os endpoints:
 
 http://localhost:{porta}/swagger
 
-##👨‍💻 Autor
+## 👨‍💻 Autor
 João Vitor — Desenvolvedor Full Stack
 FIAP | MRM McCann | Challenge Mottu
