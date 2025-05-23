@@ -66,7 +66,6 @@ O objetivo é construir uma **API RESTful** para gerenciamento de usuários, per
 ````
 
 ## 📦 Códigos de Resposta HTTP
-Código	Descrição
 - 200	OK (requisição bem-sucedida)
 - 201	Created (recurso criado)
 - 204	No Content (sem conteúdo)
