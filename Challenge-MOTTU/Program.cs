@@ -2,6 +2,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Challenge_MOTTU.Connection;
 using Oracle.EntityFrameworkCore;
+using Challenge_MOTTU.Interfaces;
+using Challenge_MOTTU.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("OracleConnection")));
 
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 var app = builder.Build();
 
 // Use Swagger no desenvolvimento
