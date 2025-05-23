@@ -51,18 +51,20 @@ O objetivo é construir uma **API RESTful** para gerenciamento de usuários, per
 
 ### 🔸 Exemplo de Requisição (POST /usuarios)
 
-´´´ json {
+```json {
   "nome": "João Vitor",
   "email": "joao@mottu.com",
   "senha": "senhaSegura123"
 }
+````
 
 🔸 Exemplo de Resposta (201 Created)
-{
+```json {
   "id": 1,
   "nome": "João Vitor",
   "email": "joao@mottu.com"
 }
+````
 
 ## 📦 Códigos de Resposta HTTP
 Código	Descrição
