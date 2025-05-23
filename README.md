@@ -28,8 +28,6 @@ O objetivo é construir uma **API RESTful** para gerenciamento de usuários, per
 - ✅ Atualização de dados cadastrais  
 - ✅ Exclusão de usuários  
 
-> ⚠️ Cada usuário representa um cliente da Mottu que poderá realizar locações de motos pelo sistema.
-
 ---
 
 ## 🔗 Rotas da API
@@ -52,11 +50,12 @@ O objetivo é construir uma **API RESTful** para gerenciamento de usuários, per
 ### 🔸 POST `/usuarios`
 
 json
-{
+`{
   "nome": "João Vitor",
   "email": "joao@mottu.com",
   "senha": "senhaSegura123"
-}
+}`
+                  
 
 🔸 Exemplo de Resposta (201 Created)
 {
@@ -64,7 +63,8 @@ json
   "nome": "João Vitor",
   "email": "joao@mottu.com"
 }
-📦 Códigos de Resposta HTTP
+
+## 📦 Códigos de Resposta HTTP
 Código	Descrição
 200	OK (requisição bem-sucedida)
 201	Created (recurso criado)
@@ -72,7 +72,7 @@ Código	Descrição
 400	Bad Request (erro na requisição)
 404	Not Found (recurso não encontrado)
 
-🚀 Instalação e Execução
+## 🚀 Instalação e Execução
 Clone o repositório:
 git clone https://github.com/seu-usuario/seu-projeto.git
 Abra o projeto no Visual Studio.
@@ -85,14 +85,7 @@ dotnet run
 Acesse a documentação Swagger para testar os endpoints:
 
 http://localhost:{porta}/swagger
-👨‍💻 Autor
+
+##👨‍💻 Autor
 João Vitor — Desenvolvedor Full Stack
 FIAP | MRM McCann | Challenge Mottu
-
-bash
-Copiar
-Editar
-
-Se quiser, posso trocar o link do repositório (`git clone`) e o `{porta}` pelo número da sua porta local, como `http://localhost:5068/swagger`.
-
-Quer que eu personalize com isso também?
