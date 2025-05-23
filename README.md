@@ -61,7 +61,8 @@ O objetivo é construir uma **API RESTful** para gerenciamento de usuários, per
 ```json {
   "id": 1,
   "nome": "João Vitor",
-  "email": "joao@mottu.com"
+  "email": "joao@mottu.com",
+  "senha": "senhaSegura123"
 ````
 
 ## 📦 Códigos de Resposta HTTP
@@ -75,6 +76,7 @@ Código	Descrição
 ## 🚀 Instalação e Execução
 Clone o repositório:
 git clone https://github.com/seu-usuario/seu-projeto.git
+
 Abra o projeto no Visual Studio.
 
 Configure a string de conexão com o banco de dados no arquivo appsettings.json.
@@ -82,6 +84,7 @@ Configure a string de conexão com o banco de dados no arquivo appsettings.json.
 Execute a aplicação (pressionando F5) ou via terminal:
 
 dotnet run
+
 Acesse a documentação Swagger para testar os endpoints:
 
 http://localhost:{porta}/swagger
