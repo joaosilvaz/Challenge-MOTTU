@@ -49,12 +49,14 @@ O objetivo é construir uma **API RESTful** para gerenciamento de usuários, per
 
 ### 🔸 POST `/usuarios`
 
-json
-`{
+### 🔸 Exemplo de Requisição (POST /usuarios)
+
+```json
+{
   "nome": "João Vitor",
   "email": "joao@mottu.com",
   "senha": "senhaSegura123"
-}`
+}
                   
 
 🔸 Exemplo de Resposta (201 Created)
