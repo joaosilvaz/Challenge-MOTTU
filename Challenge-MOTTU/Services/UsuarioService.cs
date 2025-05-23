@@ -18,14 +18,12 @@ namespace Challenge_MOTTU.Services
 
         public async Task<Usuario> CriarAsync(Usuario usuario)
         {
-            // Validação dos campos obrigatórios
             if (string.IsNullOrWhiteSpace(usuario.Nome))
                 throw new UsuarioException("O campo Nome é obrigatório.");
 
             if (string.IsNullOrWhiteSpace(usuario.Email))
                  throw new UsuarioException("O campo Email é obrigatório.");
 
-            // Verificar se o e-mail já está em uso
             var emailEmUso = _usuarioService.Usuarios.FirstOrDefault(p => p.Email.Trim() == usuario.Email.Trim());
 
             if (emailEmUso != null)
@@ -40,7 +38,6 @@ namespace Challenge_MOTTU.Services
 
             return  usuario;
         }
-
 
         public async Task<IEnumerable<Usuario>> GetAllAsync()
         {
@@ -98,6 +95,5 @@ namespace Challenge_MOTTU.Services
             _usuarioService.Usuarios.Remove(usuario);
             await _usuarioService.SaveChangesAsync();
         }
-
     }
 }

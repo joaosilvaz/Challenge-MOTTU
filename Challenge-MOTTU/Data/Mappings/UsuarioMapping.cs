@@ -8,7 +8,7 @@ namespace Challenge_MOTTU.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Usuario> builder)
         {
-            builder.ToTable("USUARIOS", "RM554694"); // Tabela e schema exatos no Oracle
+            builder.ToTable("USUARIOS", "RM554694");
 
             builder.HasKey(u => u.Id);
 
