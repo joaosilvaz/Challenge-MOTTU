@@ -88,6 +88,6 @@ Acesse a documentação Swagger para testar os endpoints:
 
 http://localhost:{porta}/swagger
 
-## 👨‍💻 Autor
-João Vitor — Desenvolvedor Full Stack
-FIAP | MRM McCann | Challenge Mottu
+## 👨‍💻 Autores
+João Vitor da Silva Nascimento — Rafael Bezerra - Guilherme Alves Pedroso
+FIAP | Challenge Mottu
