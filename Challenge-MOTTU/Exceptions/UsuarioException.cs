@@ -1,13 +1,13 @@
-﻿using System.Runtime.ConstrainedExecution;
-
-namespace Challenge_MOTTU.Exceptions
+﻿namespace Challenge_MOTTU.Exceptions
 {
-    public class UsuarioException : Exception
+    public class UsuarioNotFoundException : Exception
     {
         private const string MENSAGEM_PADRAO = "Usuário não encontrado";
 
-        public UsuarioException(string? message = MENSAGEM_PADRAO) : base(message)
-        {
-        }
+        public UsuarioNotFoundException() : base(MENSAGEM_PADRAO) {}
+
+        public UsuarioNotFoundException(string message) : base(message) {}
+
+        public UsuarioNotFoundException(string message, Exception innerException) : base(message, innerException){}
     }
 }

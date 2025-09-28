@@ -24,7 +24,7 @@ namespace Challenge_MOTTU.Controllers
                 var usuarios = await _usuarioService.GetAllAsync();
                 return Ok(usuarios);
             }
-            catch (UsuarioException ex)
+            catch (UsuarioNotFoundException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -44,7 +44,7 @@ namespace Challenge_MOTTU.Controllers
 
                 return Ok(usuario);
             }
-            catch (UsuarioException ex)
+            catch (UsuarioNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -63,7 +63,7 @@ namespace Challenge_MOTTU.Controllers
                 return Ok(usuario);
 
             }
-            catch (UsuarioException ex)
+            catch (UsuarioNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -82,7 +82,7 @@ namespace Challenge_MOTTU.Controllers
 
                 return CreatedAtAction(nameof(GetById), new { id = usuarioEntity.Id }, usuarioEntity);
             }
-            catch (UsuarioException ex)
+            catch (UsuarioNotFoundException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -104,7 +104,7 @@ namespace Challenge_MOTTU.Controllers
                 await _usuarioService.AtualizarAsync(id, usuarioAtualizado);
                 return NoContent();
             }
-            catch (UsuarioException ex)
+            catch (UsuarioNotFoundException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -122,7 +122,7 @@ namespace Challenge_MOTTU.Controllers
                 await _usuarioService.DeletarAsync(id);
                 return NoContent();
             }
-            catch (UsuarioException ex)
+            catch (UsuarioNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }

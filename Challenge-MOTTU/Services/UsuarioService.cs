@@ -2,7 +2,6 @@
 using Challenge_MOTTU.Exceptions;
 using Challenge_MOTTU.Interfaces;
 using Challenge_MOTTU.Model;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Challenge_MOTTU.Services
@@ -19,18 +18,18 @@ namespace Challenge_MOTTU.Services
         public async Task<Usuario> CriarAsync(Usuario usuario)
         {
             if (string.IsNullOrWhiteSpace(usuario.Nome))
-                throw new UsuarioException("O campo Nome é obrigatório.");
+                throw new UsuarioNotFoundException("O campo Nome é obrigatório.");
 
             if (string.IsNullOrWhiteSpace(usuario.Email))
-                 throw new UsuarioException("O campo Email é obrigatório.");
+                 throw new UsuarioNotFoundException("O campo Email é obrigatório.");
 
             var emailEmUso = _usuarioService.Usuarios.FirstOrDefault(p => p.Email.Trim() == usuario.Email.Trim());
 
             if (emailEmUso != null)
-                throw new UsuarioException("O email informado já está em uso.");
+                throw new UsuarioNotFoundException("O email informado já está em uso.");
 
             if (string.IsNullOrWhiteSpace(usuario.Senha))
-                throw new UsuarioException("O campo Senha é obrigatório.");
+                throw new UsuarioNotFoundException("O campo Senha é obrigatório.");
 
             _usuarioService.Usuarios.Add(usuario);
 
@@ -44,7 +43,7 @@ namespace Challenge_MOTTU.Services
             var usuarios = await _usuarioService.Usuarios.ToListAsync();
 
             if (usuarios == null || !usuarios.Any())
-                throw new UsuarioException("Nenhum usuário encontrado.");
+                throw new UsuarioNotFoundException("Nenhum usuário encontrado.");
 
             return usuarios;
         }
@@ -52,12 +51,12 @@ namespace Challenge_MOTTU.Services
         public async Task<Usuario> GetByEmail(string? email)
         {
             if (string.IsNullOrEmpty(email))
-                throw new UsuarioException("E-mail está vazio");
+                throw new UsuarioNotFoundException("E-mail está vazio");
 
             Usuario? usuario = _usuarioService.Usuarios.FirstOrDefault(p => p.Email == email);
 
             if (usuario is null)
-                throw new UsuarioException("Usuário com este e-mail não existe");
+                throw new UsuarioNotFoundException("Usuário com este e-mail não existe");
 
             return usuario;
         }
@@ -67,7 +66,7 @@ namespace Challenge_MOTTU.Services
             var usuario = _usuarioService.Usuarios.FirstOrDefault(u => u.Id == id);
 
             if (usuario is null)
-                throw new UsuarioException();
+                throw new UsuarioNotFoundException();
 
             return usuario;
         }
@@ -76,7 +75,7 @@ namespace Challenge_MOTTU.Services
         {
             var usuario = await _usuarioService.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario == null)
-                throw new UsuarioException("Usuário não encontrado.");
+                throw new UsuarioNotFoundException("Usuário não encontrado.");
 
             usuario.Nome = usuarioAtualizado.Nome;
             usuario.Email = usuarioAtualizado.Email;
@@ -90,7 +89,7 @@ namespace Challenge_MOTTU.Services
         {
             var usuario = await _usuarioService.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario == null)
-                throw new UsuarioException("Usuário não encontrado.");
+                throw new UsuarioNotFoundException("Usuário não encontrado.");
 
             _usuarioService.Usuarios.Remove(usuario);
             await _usuarioService.SaveChangesAsync();

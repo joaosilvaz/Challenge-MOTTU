@@ -10,10 +10,14 @@ namespace Challenge_MOTTU.Connection
         : base(options) { }
 
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Pending> Pendings { get; set; }
+        public DbSet<Bike> Bikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UsuarioMapping());
+            modelBuilder.ApplyConfiguration(new PendingMapping());
+            modelBuilder.ApplyConfiguration(new BikeMapping());
         }
     }
 }

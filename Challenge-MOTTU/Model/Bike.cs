@@ -2,22 +2,22 @@
 
 namespace Challenge_MOTTU.Model
 {
-    public class Usuario
+    public class Bike
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
         [MaxLength(100)]
-        public string Nome { get; set; } = string.Empty;
+        public string Modelo { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(100)]
-        public string Email { get; set; } = string.Empty;
+        [MaxLength(7)]
+        public string Placa { get; set; } = string.Empty;
 
-        [Required]
-        [MaxLength(100)]
-        public string Senha { get; set; } = string.Empty;
+        public int Ano { get; set; }
+
+        public bool Disponivel { get; set; } = true;
 
         public ICollection<Pending> Pendings { get; set; }
     }
