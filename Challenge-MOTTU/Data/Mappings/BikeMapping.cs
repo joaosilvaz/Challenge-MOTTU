@@ -33,7 +33,8 @@ namespace Challenge_MOTTU.Data.Mappings
 
             builder.Property(b => b.Disponivel)
                    .IsRequired()
-                   .HasColumnName("DISPONIVEL");
+                   .HasColumnName("DISPONIVEL")
+                   .HasConversion<int>();
 
             // Relacionamento 1:N com Pending
             builder.HasMany(b => b.Pendings)

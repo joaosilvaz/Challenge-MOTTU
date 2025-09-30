@@ -1,6 +1,8 @@
-﻿using Challenge_MOTTU.Exceptions;
-using Challenge_MOTTU.Interfaces;
-using Challenge_MOTTU.Model;
+﻿using Challenge_MOTTU.DTOs.Requests;
+using Challenge_MOTTU.DTOs.Responses;
+using Challenge_MOTTU.Exceptions;
+using Challenge_MOTTU.Mappers;
+using Challenge_MOTTU.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Challenge_MOTTU.Controllers
@@ -10,126 +12,114 @@ namespace Challenge_MOTTU.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;
+        private readonly LinkGenerator _linkGenerator;
 
-        public UsuarioController(IUsuarioService context)
+        public UsuarioController(IUsuarioService context, LinkGenerator linkGenerator)
         {
             _usuarioService = context;
+            _linkGenerator = linkGenerator;
         }
 
+        /// <summary>
+        /// Retorna todos os usuários com paginação.
+        /// </summary>
+        /// <param name="pageNumber">Número da página (padrão = 1)</param>
+        /// <param name="pageSize">Quantidade de itens por página (padrão = 10)</param>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetAll()
+        [ProducesResponseType(typeof(PagedResponse<UsuarioResponse>), 200)]
+        public async Task<ActionResult<PagedResponse<UsuarioResponse>>> GetAll(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
         {
-            try
+            var usuarios = await _usuarioService.GetAllAsync();
+
+            var totalCount = usuarios.Count();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var items = usuarios
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(u => u.ToResponse(_linkGenerator)) 
+                .ToList();
+
+            var response = new PagedResponse<UsuarioResponse>
             {
-                var usuarios = await _usuarioService.GetAllAsync();
-                return Ok(usuarios);
-            }
-            catch (UsuarioNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Erro interno: " + ex.Message);
-            }
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                Links = new Dictionary<string, string?>
+                {
+                    { "self", _linkGenerator.GetPathByAction("GetAll", "Usuario", new { pageNumber, pageSize }) },
+                    { "next", pageNumber < totalPages ? _linkGenerator.GetPathByAction("GetAll", "Usuario", new { pageNumber = pageNumber + 1, pageSize }) : null },
+                    { "prev", pageNumber > 1 ? _linkGenerator.GetPathByAction("GetAll", "Usuario", new { pageNumber = pageNumber - 1, pageSize }) : null }
+                }
+            };
+
+            return Ok(response);
         }
 
-
+        /// <summary>
+        /// Busca usuário pelo ID.
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetById(int id)
+        [ProducesResponseType(typeof(UsuarioResponse), 200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<UsuarioResponse>> GetById(int id)
         {
             try
             {
                 var usuario = await _usuarioService.GetById(id);
-
-                return Ok(usuario);
+                return Ok(usuario.ToResponse(_linkGenerator));
             }
             catch (UsuarioNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
         }
 
-        [HttpGet("buscar")]
-        public async Task<ActionResult<Usuario>> GetByEmail([FromQuery] string email)
-        {
-            try
-            {
-                var usuario = await _usuarioService.GetByEmail(email);
-                return Ok(usuario);
-
-            }
-            catch (UsuarioNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
+        /// <summary>
+        /// Cria um novo usuário.
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Usuario>> Create(Usuario usuario)
+        [ProducesResponseType(typeof(UsuarioResponse), 201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<UsuarioResponse>> Create(CreateUsuarioRequest request)
         {
-            try
-            {
-                Usuario usuarioEntity = await _usuarioService.CriarAsync(usuario);
+            var usuario = request.ToEntity();
+            var usuarioEntity = await _usuarioService.CriarAsync(usuario);
 
-                return CreatedAtAction(nameof(GetById), new { id = usuarioEntity.Id }, usuarioEntity);
-            }
-            catch (UsuarioNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return CreatedAtAction(nameof(GetById), new { id = usuarioEntity.Id }, usuarioEntity.ToResponse(_linkGenerator));
         }
 
-
+        /// <summary>
+        /// Atualiza um usuário existente.
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Usuario usuarioAtualizado)
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> Update(int id, UpdateUsuarioRequest request)
         {
-            try
-            {
-                if (id != usuarioAtualizado.Id)
-                    return BadRequest("ID do usuário inválido.");
+            var usuarioAtualizado = request.ToEntity(id);
+            var usuario = await _usuarioService.AtualizarAsync(id, usuarioAtualizado);
 
-                await _usuarioService.AtualizarAsync(id, usuarioAtualizado);
-                return NoContent();
-            }
-            catch (UsuarioNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Erro interno: " + ex.Message);
-            }
+            if (usuario == null)
+                return NotFound("Usuário não encontrado.");
+
+            return NoContent();
         }
 
+        /// <summary>
+        /// Remove um usuário.
+        /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _usuarioService.DeletarAsync(id);
-                return NoContent();
-            }
-            catch (UsuarioNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Erro interno: " + ex.Message);
-            }
+            await _usuarioService.DeletarAsync(id);
+            return NoContent();
         }
     }
 }

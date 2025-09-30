@@ -1,18 +1,18 @@
 ﻿using Challenge_MOTTU.Connection;
 using Challenge_MOTTU.Exceptions;
-using Challenge_MOTTU.Interfaces;
 using Challenge_MOTTU.Model;
+using Challenge_MOTTU.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Challenge_MOTTU.Services
 {
     public class UsuarioService : IUsuarioService
     {
-        private readonly AppDbContext _usuarioService;
+        private readonly AppDbContext _context;
 
         public UsuarioService(AppDbContext context)
         {
-            _usuarioService = context;
+            _context = context;
         }
 
         public async Task<Usuario> CriarAsync(Usuario usuario)
@@ -21,28 +21,25 @@ namespace Challenge_MOTTU.Services
                 throw new UsuarioNotFoundException("O campo Nome é obrigatório.");
 
             if (string.IsNullOrWhiteSpace(usuario.Email))
-                 throw new UsuarioNotFoundException("O campo Email é obrigatório.");
+                throw new UsuarioNotFoundException("O campo Email é obrigatório.");
 
-            var emailEmUso = _usuarioService.Usuarios.FirstOrDefault(p => p.Email.Trim() == usuario.Email.Trim());
-
+            var emailEmUso = await _context.Usuarios.FirstOrDefaultAsync(p => p.Email.Trim() == usuario.Email.Trim());
             if (emailEmUso != null)
                 throw new UsuarioNotFoundException("O email informado já está em uso.");
 
             if (string.IsNullOrWhiteSpace(usuario.Senha))
                 throw new UsuarioNotFoundException("O campo Senha é obrigatório.");
 
-            _usuarioService.Usuarios.Add(usuario);
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
 
-            _usuarioService.SaveChanges();
-
-            return  usuario;
+            return usuario;
         }
 
         public async Task<IEnumerable<Usuario>> GetAllAsync()
         {
-            var usuarios = await _usuarioService.Usuarios.ToListAsync();
-
-            if (usuarios == null || !usuarios.Any())
+            var usuarios = await _context.Usuarios.ToListAsync();
+            if (!usuarios.Any())
                 throw new UsuarioNotFoundException("Nenhum usuário encontrado.");
 
             return usuarios;
@@ -53,8 +50,7 @@ namespace Challenge_MOTTU.Services
             if (string.IsNullOrEmpty(email))
                 throw new UsuarioNotFoundException("E-mail está vazio");
 
-            Usuario? usuario = _usuarioService.Usuarios.FirstOrDefault(p => p.Email == email);
-
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(p => p.Email == email);
             if (usuario is null)
                 throw new UsuarioNotFoundException("Usuário com este e-mail não existe");
 
@@ -63,8 +59,7 @@ namespace Challenge_MOTTU.Services
 
         public async Task<Usuario> GetById(int id)
         {
-            var usuario = _usuarioService.Usuarios.FirstOrDefault(u => u.Id == id);
-
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario is null)
                 throw new UsuarioNotFoundException();
 
@@ -73,7 +68,7 @@ namespace Challenge_MOTTU.Services
 
         public async Task<Usuario> AtualizarAsync(int id, Usuario usuarioAtualizado)
         {
-            var usuario = await _usuarioService.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario == null)
                 throw new UsuarioNotFoundException("Usuário não encontrado.");
 
@@ -81,18 +76,18 @@ namespace Challenge_MOTTU.Services
             usuario.Email = usuarioAtualizado.Email;
             usuario.Senha = usuarioAtualizado.Senha;
 
-            await _usuarioService.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return usuario;
         }
 
         public async Task DeletarAsync(int id)
         {
-            var usuario = await _usuarioService.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
             if (usuario == null)
                 throw new UsuarioNotFoundException("Usuário não encontrado.");
 
-            _usuarioService.Usuarios.Remove(usuario);
-            await _usuarioService.SaveChangesAsync();
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
         }
     }
 }

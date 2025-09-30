@@ -1,20 +1,27 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Challenge_MOTTU.Connection;
-using Oracle.EntityFrameworkCore;
-using Challenge_MOTTU.Interfaces;
 using Challenge_MOTTU.Services;
+using Challenge_MOTTU.Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("OracleConnection")));
 
+
+
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IPendingService, PendingService>();
+builder.Services.AddScoped<IBikeService, BikeService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

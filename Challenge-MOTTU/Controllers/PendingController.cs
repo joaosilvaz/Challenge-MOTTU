@@ -1,6 +1,7 @@
-﻿using Challenge_MOTTU.Exceptions;
-using Challenge_MOTTU.Interfaces;
-using Challenge_MOTTU.Model;
+﻿using Challenge_MOTTU.DTOs.Requests;
+using Challenge_MOTTU.DTOs.Responses;
+using Challenge_MOTTU.Exceptions;
+using Challenge_MOTTU.Mappers;
 using Challenge_MOTTU.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,55 +12,87 @@ namespace Challenge_MOTTU.Controllers
     public class PendingController : ControllerBase
     {
         private readonly IPendingService _pendingService;
+        private readonly LinkGenerator _linkGenerator;
 
-        public PendingController(IPendingService context)
+        public PendingController(IPendingService context, LinkGenerator linkGenerator)
         {
             _pendingService = context;
+            _linkGenerator = linkGenerator;
         }
 
+        /// <summary>
+        /// Retorna todas as pendências com paginação.
+        /// </summary>
+        /// <param name="pageNumber">Número da página (padrão = 1)</param>
+        /// <param name="pageSize">Quantidade de itens por página (padrão = 10)</param>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pending>>> GetAll()
+        [ProducesResponseType(typeof(PagedResponse<PendingResponse>), 200)]
+        public async Task<ActionResult<PagedResponse<PendingResponse>>> GetAll(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
         {
-            try
+            var pendings = await _pendingService.GetAllAsync();
+
+            var totalCount = pendings.Count();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var items = pendings
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => p.ToResponse(_linkGenerator))
+                .ToList();
+
+            var response = new PagedResponse<PendingResponse>
             {
-                var pendings = await _pendingService.GetAllAsync();
-                return Ok(pendings);
-            }
-            catch (PendingNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Erro interno: " + ex.Message);
-            }
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                Links = new Dictionary<string, string>
+                {
+                    { "self", _linkGenerator.GetPathByAction("GetAll", "Pending", new { pageNumber, pageSize }) ?? string.Empty },
+                    { "next", pageNumber < totalPages ? _linkGenerator.GetPathByAction("GetAll", "Pending", new { pageNumber = pageNumber + 1, pageSize }) ?? string.Empty : string.Empty },
+                    { "prev", pageNumber > 1 ? _linkGenerator.GetPathByAction("GetAll", "Pending", new { pageNumber = pageNumber - 1, pageSize }) ?? string.Empty : string.Empty }
+                }
+            };
+
+            return Ok(response);
         }
 
+        /// <summary>
+        /// Retorna uma pendência pelo ID.
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pending>> GetById(int id)
+        [ProducesResponseType(typeof(PendingResponse), 200)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<PendingResponse>> GetById(int id)
         {
             try
             {
                 var pending = await _pendingService.GetById(id);
-                return Ok(pending);
+                return Ok(pending.ToResponse(_linkGenerator));
             }
             catch (PendingNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
         }
 
+        /// <summary>
+        /// Cria uma nova pendência (aluguel de bike).
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Pending>> Create(Pending pending)
+        [ProducesResponseType(typeof(PendingResponse), 201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<PendingResponse>> Create(CreatePendingRequest request)
         {
             try
             {
+                var pending = request.ToEntity();
                 var pendingEntity = await _pendingService.CriarAsync(pending);
-                return CreatedAtAction(nameof(GetById), new { id = pendingEntity.Id }, pendingEntity);
+
+                return CreatedAtAction(nameof(GetById), new { id = pendingEntity.Id }, pendingEntity.ToResponse(_linkGenerator));
             }
             catch (Exception ex)
             {
@@ -67,28 +100,50 @@ namespace Challenge_MOTTU.Controllers
             }
         }
 
+        /// <summary>
+        /// Atualiza apenas a data final da pendência.
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Pending pendingAtualizada)
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> Update(int id, [FromBody] DateTime novaDataFim)
         {
             try
             {
-                if (id != pendingAtualizada.Id)
-                    return BadRequest("ID da pendência inválido.");
-
-                await _pendingService.AtualizarAsync(id, pendingAtualizada);
+                await _pendingService.AtualizarDataFimAsync(id, novaDataFim);
                 return NoContent();
             }
             catch (PendingNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
-            catch (Exception ex)
+        }
+
+        /// <summary>
+        /// Finaliza um aluguel e libera a bike.
+        /// </summary>
+        [HttpPut("{id}/finalizar")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> Finalizar(int id)
+        {
+            try
             {
-                return StatusCode(500, "Erro interno: " + ex.Message);
+                await _pendingService.FinalizarAsync(id);
+                return NoContent();
+            }
+            catch (PendingNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
+        /// <summary>
+        /// Remove uma pendência.
+        /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -99,10 +154,6 @@ namespace Challenge_MOTTU.Controllers
             catch (PendingNotFoundException ex)
             {
                 return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Erro interno: " + ex.Message);
             }
         }
     }
