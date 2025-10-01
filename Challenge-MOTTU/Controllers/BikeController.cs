@@ -2,7 +2,6 @@
 using Challenge_MOTTU.DTOs.Responses;
 using Challenge_MOTTU.Exceptions;
 using Challenge_MOTTU.Mappers;
-using Challenge_MOTTU.Model;
 using Challenge_MOTTU.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +25,7 @@ namespace Challenge_MOTTU.Controllers
         /// </summary>
         /// <param name="pageNumber">Número da página (padrão = 1)</param>
         /// <param name="pageSize">Quantidade de registros por página (padrão = 10)</param>
+        /// <returns>Uma lista paginada de motos com links HATEOAS.</returns>
         [HttpGet]
         [ProducesResponseType(typeof(PagedResponse<BikeResponse>), 200)]
         public async Task<ActionResult<PagedResponse<BikeResponse>>> GetAll(
@@ -74,6 +74,8 @@ namespace Challenge_MOTTU.Controllers
         /// <summary>
         /// Busca uma moto pelo ID.
         /// </summary>
+        /// <param name="id">ID da moto</param>
+        /// <returns>A moto encontrada ou 404 se não existir.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(BikeResponse), 200)]
         [ProducesResponseType(404)]
@@ -103,6 +105,8 @@ namespace Challenge_MOTTU.Controllers
         /// <summary>
         /// Cadastra uma nova moto.
         /// </summary>
+        /// <param name="request">Dados da moto</param>
+        /// <returns>A moto criada com links HATEOAS.</returns>
         [HttpPost]
         [ProducesResponseType(typeof(BikeResponse), 201)]
         [ProducesResponseType(400)]
@@ -125,6 +129,9 @@ namespace Challenge_MOTTU.Controllers
         /// <summary>
         /// Atualiza a disponibilidade de uma moto (true = disponível, false = indisponível).
         /// </summary>
+        /// <param name="id">ID da moto</param>
+        /// <param name="disponivel">Novo estado de disponibilidade</param>
+        /// <returns>204 se atualizado ou 404 se não encontrado.</returns>
         [HttpPut("{id}/disponibilidade")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -144,6 +151,8 @@ namespace Challenge_MOTTU.Controllers
         /// <summary>
         /// Exclui uma moto do sistema.
         /// </summary>
+        /// <param name="id">ID da moto</param>
+        /// <returns>204 se excluída ou 404 se não encontrada.</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

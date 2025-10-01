@@ -21,10 +21,11 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Retorna todas as pendências com paginação.
+        /// Lista todas as pendências (alugueis de motos) com paginação.
         /// </summary>
         /// <param name="pageNumber">Número da página (padrão = 1)</param>
-        /// <param name="pageSize">Quantidade de itens por página (padrão = 10)</param>
+        /// <param name="pageSize">Quantidade de registros por página (padrão = 10)</param>
+        /// <returns>Uma lista paginada de pendências com links HATEOAS.</returns>
         [HttpGet]
         [ProducesResponseType(typeof(PagedResponse<PendingResponse>), 200)]
         public async Task<ActionResult<PagedResponse<PendingResponse>>> GetAll(
@@ -61,8 +62,10 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Retorna uma pendência pelo ID.
+        /// Busca uma pendência pelo ID.
         /// </summary>
+        /// <param name="id">ID da pendência</param>
+        /// <returns>A pendência encontrada ou 404 se não existir.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PendingResponse), 200)]
         [ProducesResponseType(404)]
@@ -80,8 +83,10 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Cria uma nova pendência (aluguel de bike).
+        /// Cria uma nova pendência (aluguel de uma bike por um usuário).
         /// </summary>
+        /// <param name="request">Dados do aluguel</param>
+        /// <returns>A pendência criada com links HATEOAS.</returns>
         [HttpPost]
         [ProducesResponseType(typeof(PendingResponse), 201)]
         [ProducesResponseType(400)]
@@ -101,8 +106,11 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Atualiza apenas a data final da pendência.
+        /// Atualiza a data final de uma pendência.
         /// </summary>
+        /// <param name="id">ID da pendência</param>
+        /// <param name="novaDataFim">Nova data final</param>
+        /// <returns>204 se atualizado ou 404 se não encontrado.</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -120,8 +128,10 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Finaliza um aluguel e libera a bike.
+        /// Exclui uma pendência do sistema.
         /// </summary>
+        /// <param name="id">ID da pendência</param>
+        /// <returns>204 se excluída ou 404 se não encontrada.</returns>
         [HttpPut("{id}/finalizar")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -139,8 +149,9 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Remove uma pendência.
+        /// Exclui uma pendência do sistema.
         /// </summary>
+        /// <param name="id">ID da pendência</param>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

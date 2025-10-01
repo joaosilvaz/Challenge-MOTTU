@@ -21,10 +21,11 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Retorna todos os usuários com paginação.
+        /// Lista todos os usuários cadastrados com paginação.
         /// </summary>
         /// <param name="pageNumber">Número da página (padrão = 1)</param>
-        /// <param name="pageSize">Quantidade de itens por página (padrão = 10)</param>
+        /// <param name="pageSize">Quantidade de registros por página (padrão = 10)</param>
+        /// <returns>Uma lista paginada de usuários com links HATEOAS.</returns>
         [HttpGet]
         [ProducesResponseType(typeof(PagedResponse<UsuarioResponse>), 200)]
         public async Task<ActionResult<PagedResponse<UsuarioResponse>>> GetAll(
@@ -39,7 +40,7 @@ namespace Challenge_MOTTU.Controllers
             var items = usuarios
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(u => u.ToResponse(_linkGenerator)) 
+                .Select(u => u.ToResponse(_linkGenerator))
                 .ToList();
 
             var response = new PagedResponse<UsuarioResponse>
@@ -61,8 +62,10 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Busca usuário pelo ID.
+        /// Busca um usuário pelo ID.
         /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <returns>O usuário encontrado ou 404 se não existir.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UsuarioResponse), 200)]
         [ProducesResponseType(404)]
@@ -82,6 +85,8 @@ namespace Challenge_MOTTU.Controllers
         /// <summary>
         /// Cria um novo usuário.
         /// </summary>
+        /// <param name="request">Dados para criação do usuário</param>
+        /// <returns>O usuário criado com links HATEOAS.</returns>
         [HttpPost]
         [ProducesResponseType(typeof(UsuarioResponse), 201)]
         [ProducesResponseType(400)]
@@ -94,8 +99,11 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Atualiza um usuário existente.
+        /// Atualiza os dados de um usuário existente.
         /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <param name="request">Novos dados do usuário</param>
+        /// <returns>204 se atualizado com sucesso ou 404 se não encontrado.</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -111,8 +119,10 @@ namespace Challenge_MOTTU.Controllers
         }
 
         /// <summary>
-        /// Remove um usuário.
+        /// Exclui um usuário do sistema.
         /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <returns>204 se excluído com sucesso ou 404 se não encontrado.</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
