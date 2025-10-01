@@ -28,7 +28,7 @@ O objetivo é construir uma **API RESTful** para gerenciamento de usuários, pen
 
 A escolha do domínio de gerenciamento de frota de motos se justifica pela complexidade adequada para demonstrar relacionamentos entre entidades, integrações com banco de dados e regras de negócio específicas do setor de mobilidade.
 
-📌 Entidades Principais
+### 📌 Entidades Principais
 
 -Usuário – Representa os clientes que alugam as motos no sistema.
 
@@ -36,7 +36,7 @@ A escolha do domínio de gerenciamento de frota de motos se justifica pela compl
 
 -Pendência (Aluguel) – Representa o contrato de aluguel entre usuário e moto, com status (Pendente, Aprovado, Concluido, Cancelado), data de início e fim obrigatórias.
 
-🏗️ Arquitetura Técnica
+### 🏗️ Arquitetura Técnica
 
 -ASP.NET Core Web API – Framework robusto, multiplataforma e de alta performance.
 
