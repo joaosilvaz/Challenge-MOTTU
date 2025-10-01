@@ -157,12 +157,17 @@ A escolha do domínio de gerenciamento de frota de motos se justifica pela compl
 
 🔸 Exemplo de Resposta (201 Created)
 ```json {
-  "id": 1,
-  "modelo": "BMW G 310 R",
-  "placa": "TUV9X65",
-  "chassi": "WB10J12345L678901",
-  "ano": 2023
-  "disponivel": true
+      "id": 2,
+      "modelo": "Kawasaki Ninja 400",
+      "placa": "QWE2R34",
+      "chassi": "JKLKA3456F0987654",
+      "ano": 2022,
+      "disponivel": true,
+      "links": {
+        "self": "/bikes/2",
+        "updateDisponibilidade": "/bikes/2/disponibilidade",
+        "delete": "/bikes/2"
+      }
 ````
 
 ### 🔸 POST `/pendings`
