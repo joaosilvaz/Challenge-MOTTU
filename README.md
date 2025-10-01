@@ -1,4 +1,4 @@
-# 🛵 Challenge - API de Usuários para Aluguel de Motos Mottu
+# 🛵 Challenge - Sistema de Aluguel de Motos Mottu
 
 Este projeto foi desenvolvido como parte do Challenge da FIAP em parceria com a empresa **Mottu**, para a disciplina de **Desenvolvimento Web com ASP.NET Core**.  
 O objetivo é construir uma **API RESTful** para gerenciamento de usuários, pendings e bikes. Esses usuários utilizarão o sistema para realizar o aluguel de motos.
