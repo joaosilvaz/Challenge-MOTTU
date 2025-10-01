@@ -23,22 +23,32 @@ namespace Challenge_MOTTU.Services
             if (string.IsNullOrWhiteSpace(bike.Placa))
                 throw new BikeNotFoundException("O campo Placa é obrigatório.");
 
+            if (string.IsNullOrWhiteSpace(bike.Chassi))
+                throw new BikeNotFoundException("O campo Chassi é obrigatório.");
+
             var placaExistente = await _context.Bikes
                 .FirstOrDefaultAsync(b => b.Placa.Trim().ToUpper() == bike.Placa.Trim().ToUpper());
 
             if (placaExistente != null)
                 throw new BikeNotFoundException("Já existe uma moto cadastrada com essa placa.");
 
+            var chassiExistente = await _context.Bikes
+                .FirstOrDefaultAsync(b => b.Chassi.Trim().ToUpper() == bike.Chassi.Trim().ToUpper());
+
+            if (chassiExistente != null)
+                throw new BikeNotFoundException("Já existe uma moto cadastrada com esse chassi.");
+
             if (bike.Ano <= 0)
                 throw new BikeNotFoundException("O campo Ano é obrigatório.");
 
-            bike.Disponivel = true;
+            bike.Disponivel = true; // 👈 funciona agora!
 
             _context.Bikes.Add(bike);
             await _context.SaveChangesAsync();
 
             return bike;
         }
+
 
 
         public async Task<IEnumerable<Bike>> GetAllAsync()

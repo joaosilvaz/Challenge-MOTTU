@@ -12,7 +12,7 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace Challenge_MOTTU.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250928031115_CriarTabelasUsuarioBikeEPending")]
+    [Migration("20251001020004_CriarTabelasUsuarioBikeEPending")]
     partial class CriarTabelasUsuarioBikeEPending
     {
         /// <inheritdoc />
@@ -38,8 +38,14 @@ namespace Challenge_MOTTU.Migrations
                         .HasColumnType("NUMBER(10)")
                         .HasColumnName("ANO");
 
+                    b.Property<string>("Chassi")
+                        .IsRequired()
+                        .HasMaxLength(17)
+                        .HasColumnType("NVARCHAR2(17)")
+                        .HasColumnName("CHASSI");
+
                     b.Property<int>("Disponivel")
-                        .HasColumnType("NUMBER(10)")
+                        .HasColumnType("NUMBER(1)")
                         .HasColumnName("DISPONIVEL");
 
                     b.Property<string>("Modelo")
@@ -72,12 +78,12 @@ namespace Challenge_MOTTU.Migrations
                         .HasColumnType("NUMBER(10)")
                         .HasColumnName("BIKE_ID");
 
-                    b.Property<DateTime?>("DataFim")
-                        .HasColumnType("TIMESTAMP(7)")
+                    b.Property<DateTime>("DataFim")
+                        .HasColumnType("DATE")
                         .HasColumnName("DATA_FIM");
 
                     b.Property<DateTime>("DataInicio")
-                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnType("DATE")
                         .HasColumnName("DATA_INICIO");
 
                     b.Property<int>("Status")

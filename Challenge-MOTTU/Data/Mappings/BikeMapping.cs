@@ -22,6 +22,10 @@ namespace Challenge_MOTTU.Data.Mappings
                    .HasMaxLength(100)
                    .HasColumnName("MODELO");
 
+            builder.Property(b => b.Chassi)
+                  .IsRequired()
+                  .HasColumnName("CHASSI");
+
             builder.Property(b => b.Placa)
                    .IsRequired()
                    .HasMaxLength(7)

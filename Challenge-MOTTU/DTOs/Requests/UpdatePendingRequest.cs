@@ -2,6 +2,6 @@
 {
     public class PendingUpdateDto
     {
-        public DateTimeOffset DataFim { get; set; } 
+        public DateTime DataFim { get; set; } 
     }
 }

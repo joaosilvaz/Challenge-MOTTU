@@ -12,6 +12,7 @@ namespace Challenge_MOTTU.Mappers
             {
                 Modelo = request.Modelo,
                 Placa = request.Placa,
+                Chassi = request.Chassi,
                 Ano = request.Ano,
                 Disponivel = true
             };
@@ -24,6 +25,7 @@ namespace Challenge_MOTTU.Mappers
                 Id = bike.Id,
                 Modelo = bike.Modelo,
                 Placa = bike.Placa,
+                Chassi = bike.Chassi,
                 Ano = bike.Ano,
                 Disponivel = bike.Disponivel
             };

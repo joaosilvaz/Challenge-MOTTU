@@ -16,7 +16,6 @@ namespace Challenge_MOTTU.Model
         public int UsuarioId { get; set; }
 
         [ForeignKey("UsuarioId")]
-
         public Usuario Usuario { get; set; }
 
         [Required]
@@ -27,10 +26,10 @@ namespace Challenge_MOTTU.Model
         public Bike Bike { get; set; }
 
         [Required]
-        public DateTimeOffset DataInicio { get; set; }
+        public DateTime DataInicio { get; set; }
 
         [Required]
-        public DateTimeOffset DataFim { get; set; }
+        public DateTime DataFim { get; set; }
 
     }
 }   

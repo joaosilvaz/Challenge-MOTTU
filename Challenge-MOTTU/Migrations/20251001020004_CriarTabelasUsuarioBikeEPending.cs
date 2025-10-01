@@ -23,8 +23,9 @@ namespace Challenge_MOTTU.Migrations
                         .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
                     MODELO = table.Column<string>(type: "NVARCHAR2(100)", maxLength: 100, nullable: false),
                     PLACA = table.Column<string>(type: "NVARCHAR2(7)", maxLength: 7, nullable: false),
+                    CHASSI = table.Column<string>(type: "NVARCHAR2(17)", maxLength: 17, nullable: false),
                     ANO = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    DISPONIVEL = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                    DISPONIVEL = table.Column<int>(type: "NUMBER(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,8 +58,8 @@ namespace Challenge_MOTTU.Migrations
                     STATUS = table.Column<int>(type: "NUMBER(10)", nullable: false),
                     USUARIO_ID = table.Column<int>(type: "NUMBER(10)", nullable: false),
                     BIKE_ID = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    DATA_INICIO = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: false),
-                    DATA_FIM = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: true)
+                    DATA_INICIO = table.Column<DateTime>(type: "DATE", nullable: false),
+                    DATA_FIM = table.Column<DateTime>(type: "DATE", nullable: false)
                 },
                 constraints: table =>
                 {

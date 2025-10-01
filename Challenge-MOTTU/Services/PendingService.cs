@@ -32,8 +32,19 @@ namespace Challenge_MOTTU.Services
             if (pending.DataFim <= pending.DataInicio)
                 throw new PendingNotFoundException("A Data de Fim deve ser maior que a Data de Início.");
 
-            var bike = await _context.Bikes.FindAsync(pending.BikeId);
-            if (bike == null || !bike.Disponivel)
+            var aluguelAtivo = await _context.Pendings
+                .FirstOrDefaultAsync(p => p.UsuarioId == pending.UsuarioId &&
+                                          (p.Status == Enums.StatusAluguel.Pendente ||
+                                           p.Status == Enums.StatusAluguel.Aprovado));
+
+            if (aluguelAtivo != null)
+                throw new PendingNotFoundException("Usuário já possui um aluguel ativo.");
+
+            var bike = await _context.Bikes.FirstOrDefaultAsync(b => b.Id == pending.BikeId);
+            if (bike == null)
+                throw new PendingNotFoundException("Bike não encontrada.");
+
+            if (!bike.Disponivel)
                 throw new PendingNotFoundException("Bike não está disponível.");
 
             bike.Disponivel = false;
@@ -66,7 +77,7 @@ namespace Challenge_MOTTU.Services
             return pending;
         }
 
-        public async Task AtualizarDataFimAsync(int id, DateTimeOffset novaDataFim)
+        public async Task AtualizarDataFimAsync(int id, DateTime novaDataFim)
         {
             var pending = await _context.Pendings.FirstOrDefaultAsync(p => p.Id == id);
             if (pending == null)
@@ -82,8 +93,9 @@ namespace Challenge_MOTTU.Services
 
         public async Task FinalizarAsync(int id)
         {
-            var pending = await _context.Pendings.Include(p => p.Bike)
-                                                 .FirstOrDefaultAsync(p => p.Id == id);
+            var pending = await _context.Pendings
+                                        .Include(p => p.Bike)
+                                        .FirstOrDefaultAsync(p => p.Id == id);
 
             if (pending == null)
                 throw new PendingNotFoundException("Pendência não encontrada.");
@@ -91,12 +103,8 @@ namespace Challenge_MOTTU.Services
             if (pending.Status == Enums.StatusAluguel.Concluido)
                 throw new PendingNotFoundException("Essa pendência já foi concluída.");
 
-            if (DateTimeOffset.UtcNow < pending.DataFim)
-                throw new PendingNotFoundException(
-                    $"Não é possível finalizar antes da data prevista ({pending.DataFim}).");
-
             pending.Status = Enums.StatusAluguel.Concluido;
-            pending.DataFim = DateTimeOffset.UtcNow;
+            pending.DataFim = DateTime.UtcNow;
 
             if (pending.Bike != null)
                 pending.Bike.Disponivel = true;

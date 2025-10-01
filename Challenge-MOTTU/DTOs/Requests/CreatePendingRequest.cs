@@ -4,7 +4,7 @@
     {
         public int UsuarioId { get; set; }
         public int BikeId { get; set; }
-        public DateTimeOffset DataInicio { get; set; }
-        public DateTimeOffset DataFim { get; set; }
+        public DateTime DataInicio { get; set; }
+        public DateTime DataFim { get; set; }
     }
 }

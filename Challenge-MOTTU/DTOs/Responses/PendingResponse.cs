@@ -5,8 +5,8 @@ namespace Challenge_MOTTU.DTOs.Responses
     {
         public int Id { get; set; }
         public string Status { get; set; } = string.Empty;
-        public DateTimeOffset DataInicio { get; set; }
-        public DateTimeOffset DataFim { get; set; }
+        public DateTime DataInicio { get; set; }
+        public DateTime DataFim { get; set; }
 
         public int UsuarioId { get; set; }
         public UsuarioResponse? Usuario { get; set; }

@@ -31,11 +31,15 @@ namespace Challenge_MOTTU.Data.Mappings
                    .HasColumnName("BIKE_ID");
 
             builder.Property(p => p.DataInicio)
-                   .IsRequired()
-                   .HasColumnName("DATA_INICIO");
+                     .IsRequired()
+                     .HasColumnName("DATA_INICIO")
+                     .HasColumnType("DATE");
 
             builder.Property(p => p.DataFim)
-                   .HasColumnName("DATA_FIM");
+                   .IsRequired()
+                   .HasColumnName("DATA_FIM")
+                   .HasColumnType("DATE");
+
 
             // Relacionamento com Usuario
             builder.HasOne(p => p.Usuario)

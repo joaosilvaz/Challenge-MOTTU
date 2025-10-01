@@ -9,6 +9,6 @@ namespace Challenge_MOTTU.Services.Abstractions
         Task<Pending> GetById(int id);
         Task DeletarAsync(int id);
         Task FinalizarAsync(int id);
-        Task AtualizarDataFimAsync(int id, DateTimeOffset novaDataFim);
+        Task AtualizarDataFimAsync(int id, DateTime novaDataFim);
     }
 }

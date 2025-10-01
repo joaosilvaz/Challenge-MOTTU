@@ -1,11 +1,15 @@
-﻿namespace Challenge_MOTTU.DTOs.Responses
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Challenge_MOTTU.DTOs.Responses
 {
     public class BikeResponse
     {
         public int Id { get; set; }
         public string Modelo { get; set; } = string.Empty;
         public string Placa { get; set; } = string.Empty;
+        public string Chassi { get; set; }
         public int Ano { get; set; }
         public bool Disponivel { get; set; }
+        public Dictionary<string, string> Links { get; internal set; }
     }
 }
