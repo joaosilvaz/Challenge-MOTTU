@@ -5,10 +5,11 @@ using Challenge_MOTTU.Mappers;
 using Challenge_MOTTU.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Challenge_MOTTU.Controllers
+namespace Controllers
 {
     [ApiController]
-    [Route("bikes")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/bikes")]
     public class BikeController : ControllerBase
     {
         private readonly IBikeService _bikeService;
@@ -34,8 +35,11 @@ namespace Challenge_MOTTU.Controllers
         {
             var bikes = await _bikeService.GetAllAsync();
 
-            var totalCount = bikes.Count();
+             var totalCount = bikes.Count();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            // Captura automaticamente a versão atual da API
+            var version = HttpContext.GetRequestedApiVersion()?.ToString() ?? "1.0";
 
             var items = bikes
                 .Skip((pageNumber - 1) * pageSize)
@@ -43,33 +47,34 @@ namespace Challenge_MOTTU.Controllers
                 .Select(b =>
                 {
                     var response = b.ToResponse();
-                    response.Links = new Dictionary<string, string>
+                    response.Links = new Dictionary<string, string?>
                     {
-                        { "self", _linkGenerator.GetPathByAction("GetById", "Bike", new { id = b.Id }) ?? string.Empty },
-                        { "updateDisponibilidade", _linkGenerator.GetPathByAction("AtualizarDisponibilidade", "Bike", new { id = b.Id }) ?? string.Empty },
-                        { "delete", _linkGenerator.GetPathByAction("Delete", "Bike", new { id = b.Id }) ?? string.Empty }
+                { "self", _linkGenerator.GetPathByAction("GetById", "Bike", new { version, id = b.Id }) },
+                { "update", _linkGenerator.GetPathByAction("Update", "Bike", new { version, id = b.Id }) },
+                { "delete", _linkGenerator.GetPathByAction("Delete", "Bike", new { version, id = b.Id }) }
                     };
                     return response;
                 })
                 .ToList();
 
-            var responsePaged = new PagedResponse<BikeResponse>
+            var response = new PagedResponse<BikeResponse>
             {
                 Items = items,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
                 TotalCount = totalCount,
                 TotalPages = totalPages,
-                Links = new Dictionary<string, string>
-                {
-                    { "self", _linkGenerator.GetPathByAction("GetAll", "Bike", new { pageNumber, pageSize }) ?? string.Empty },
-                    { "next", pageNumber < totalPages ? _linkGenerator.GetPathByAction("GetAll", "Bike", new { pageNumber = pageNumber + 1, pageSize }) ?? string.Empty : null },
-                    { "prev", pageNumber > 1 ? _linkGenerator.GetPathByAction("GetAll", "Bike", new { pageNumber = pageNumber - 1, pageSize }) ?? string.Empty : null }
-                }
+                Links = new Dictionary<string, string?>
+        {
+            { "self", _linkGenerator.GetPathByAction("GetAll", "Bike", new { version, pageNumber, pageSize }) },
+            { "next", pageNumber < totalPages ? _linkGenerator.GetPathByAction("GetAll", "Bike", new { version, pageNumber = pageNumber + 1, pageSize }) : null },
+            { "prev", pageNumber > 1 ? _linkGenerator.GetPathByAction("GetAll", "Bike", new { version, pageNumber = pageNumber - 1, pageSize }) : null }
+        }
             };
 
-            return Ok(responsePaged);
+            return Ok(response);
         }
+
 
         /// <summary>
         /// Busca uma moto pelo ID.

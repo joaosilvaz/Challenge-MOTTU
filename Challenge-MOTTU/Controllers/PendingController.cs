@@ -2,13 +2,15 @@
 using Challenge_MOTTU.DTOs.Responses;
 using Challenge_MOTTU.Exceptions;
 using Challenge_MOTTU.Mappers;
+using Challenge_MOTTU.Services;
 using Challenge_MOTTU.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Challenge_MOTTU.Controllers
+namespace Controllers
 {
     [ApiController]
-    [Route("pendings")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiversion}/pendings")]
     public class PendingController : ControllerBase
     {
         private readonly IPendingService _pendingService;
@@ -37,10 +39,23 @@ namespace Challenge_MOTTU.Controllers
             var totalCount = pendings.Count();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
+            // Captura automaticamente a versão atual da API
+            var version = HttpContext.GetRequestedApiVersion()?.ToString() ?? "1.0";
+
             var items = pendings
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(p => p.ToResponse(_linkGenerator))
+                .Select(p =>
+                {
+                    var response = p.ToResponse(_linkGenerator);
+                    response.Links = new Dictionary<string, string?>
+                    {
+                { "self", _linkGenerator.GetPathByAction("GetById", "Pending", new { version, id = p.Id }) },
+                { "update", _linkGenerator.GetPathByAction("Update", "Pending", new { version, id = p.Id }) },
+                { "delete", _linkGenerator.GetPathByAction("Delete", "Pending", new { version, id = p.Id }) }
+                    };
+                    return response;
+                })
                 .ToList();
 
             var response = new PagedResponse<PendingResponse>
@@ -50,12 +65,12 @@ namespace Challenge_MOTTU.Controllers
                 PageSize = pageSize,
                 TotalCount = totalCount,
                 TotalPages = totalPages,
-                Links = new Dictionary<string, string>
-                {
-                    { "self", _linkGenerator.GetPathByAction("GetAll", "Pending", new { pageNumber, pageSize }) ?? string.Empty },
-                    { "next", pageNumber < totalPages ? _linkGenerator.GetPathByAction("GetAll", "Pending", new { pageNumber = pageNumber + 1, pageSize }) ?? string.Empty : string.Empty },
-                    { "prev", pageNumber > 1 ? _linkGenerator.GetPathByAction("GetAll", "Pending", new { pageNumber = pageNumber - 1, pageSize }) ?? string.Empty : string.Empty }
-                }
+                Links = new Dictionary<string, string?>
+        {
+            { "self", _linkGenerator.GetPathByAction("GetAll", "Pending", new { version, pageNumber, pageSize }) },
+            { "next", pageNumber < totalPages ? _linkGenerator.GetPathByAction("GetAll", "Pending", new { version, pageNumber = pageNumber + 1, pageSize }) : null },
+            { "prev", pageNumber > 1 ? _linkGenerator.GetPathByAction("GetAll", "Pending", new { version, pageNumber = pageNumber - 1, pageSize }) : null }
+        }
             };
 
             return Ok(response);
@@ -74,12 +89,23 @@ namespace Challenge_MOTTU.Controllers
             try
             {
                 var pending = await _pendingService.GetById(id);
-                return Ok(pending.ToResponse(_linkGenerator));
+                var version = HttpContext.GetRequestedApiVersion()?.ToString() ?? "2.0";
+
+                var response = pending.ToResponse(_linkGenerator);
+                response.Links = new Dictionary<string, string?>
+        {
+            { "self", _linkGenerator.GetPathByAction("GetById", "Pending", new { version, id }) },
+            { "update", _linkGenerator.GetPathByAction("Update", "Pending", new { version, id }) },
+            { "delete", _linkGenerator.GetPathByAction("Delete", "Pending", new { version, id }) }
+        };
+
+                return Ok(response);
             }
-            catch (PendingNotFoundException ex)
+            catch (UsuarioNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
+ 
         }
 
         /// <summary>

@@ -41,7 +41,7 @@ namespace Challenge_MOTTU.Services
             if (bike.Ano <= 0)
                 throw new BikeNotFoundException("O campo Ano é obrigatório.");
 
-            bike.Disponivel = true; // 👈 funciona agora!
+            bike.Disponivel = true; 
 
             _context.Bikes.Add(bike);
             await _context.SaveChangesAsync();

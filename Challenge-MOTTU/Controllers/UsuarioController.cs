@@ -5,10 +5,11 @@ using Challenge_MOTTU.Mappers;
 using Challenge_MOTTU.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Challenge_MOTTU.Controllers
+namespace Controllers
 {
     [ApiController]
-    [Route("usuarios")]
+    [ApiVersion("3.0")]
+    [Route("api/v{version:apiVersion}/usuarios")]
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;
@@ -29,18 +30,31 @@ namespace Challenge_MOTTU.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(PagedResponse<UsuarioResponse>), 200)]
         public async Task<ActionResult<PagedResponse<UsuarioResponse>>> GetAll(
-            [FromQuery] int pageNumber = 1,
-            [FromQuery] int pageSize = 10)
+          [FromQuery] int pageNumber = 1,
+          [FromQuery] int pageSize = 10)
         {
             var usuarios = await _usuarioService.GetAllAsync();
 
             var totalCount = usuarios.Count();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
+            // Captura automaticamente a versão atual da API
+            var version = HttpContext.GetRequestedApiVersion()?.ToString() ?? "2.0";
+
             var items = usuarios
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(u => u.ToResponse(_linkGenerator))
+                .Select(u =>
+                {
+                    var response = u.ToResponse(_linkGenerator);
+                    response.Links = new Dictionary<string, string?>
+                    {
+                { "self", _linkGenerator.GetPathByAction("GetById", "Usuario", new { version, id = u.Id }) },
+                { "update", _linkGenerator.GetPathByAction("Update", "Usuario", new { version, id = u.Id }) },
+                { "delete", _linkGenerator.GetPathByAction("Delete", "Usuario", new { version, id = u.Id }) }
+                    };
+                    return response;
+                })
                 .ToList();
 
             var response = new PagedResponse<UsuarioResponse>
@@ -51,15 +65,16 @@ namespace Challenge_MOTTU.Controllers
                 TotalCount = totalCount,
                 TotalPages = totalPages,
                 Links = new Dictionary<string, string?>
-                {
-                    { "self", _linkGenerator.GetPathByAction("GetAll", "Usuario", new { pageNumber, pageSize }) },
-                    { "next", pageNumber < totalPages ? _linkGenerator.GetPathByAction("GetAll", "Usuario", new { pageNumber = pageNumber + 1, pageSize }) : null },
-                    { "prev", pageNumber > 1 ? _linkGenerator.GetPathByAction("GetAll", "Usuario", new { pageNumber = pageNumber - 1, pageSize }) : null }
-                }
+        {
+            { "self", _linkGenerator.GetPathByAction("GetAll", "Usuario", new { version, pageNumber, pageSize }) },
+            { "next", pageNumber < totalPages ? _linkGenerator.GetPathByAction("GetAll", "Usuario", new { version, pageNumber = pageNumber + 1, pageSize }) : null },
+            { "prev", pageNumber > 1 ? _linkGenerator.GetPathByAction("GetAll", "Usuario", new { version, pageNumber = pageNumber - 1, pageSize }) : null }
+        }
             };
 
             return Ok(response);
         }
+
 
         /// <summary>
         /// Busca um usuário pelo ID.
@@ -74,13 +89,24 @@ namespace Challenge_MOTTU.Controllers
             try
             {
                 var usuario = await _usuarioService.GetById(id);
-                return Ok(usuario.ToResponse(_linkGenerator));
+                var version = HttpContext.GetRequestedApiVersion()?.ToString() ?? "2.0";
+
+                var response = usuario.ToResponse(_linkGenerator);
+                response.Links = new Dictionary<string, string?>
+        {
+            { "self", _linkGenerator.GetPathByAction("GetById", "Usuario", new { version, id }) },
+            { "update", _linkGenerator.GetPathByAction("Update", "Usuario", new { version, id }) },
+            { "delete", _linkGenerator.GetPathByAction("Delete", "Usuario", new { version, id }) }
+        };
+
+                return Ok(response);
             }
             catch (UsuarioNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
         }
+
 
         /// <summary>
         /// Cria um novo usuário.
