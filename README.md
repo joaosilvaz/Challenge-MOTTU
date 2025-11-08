@@ -229,6 +229,59 @@ A escolha do domínio de gerenciamento de frota de motos se justifica pela compl
 Clone o repositório:
 git clone https://github.com/seu-usuario/seu-projeto.git
 
+## 🧪 Testes Unitários — Passo a Passo
+
+Esta seção orienta como configurar, escrever e executar testes unitários do projeto Challenge Mottu com xUnit, Moq e FluentAssertions. Inclui exemplos de teste para Services, Controllers e camada de dados usando EF Core com SQLite in-memory.
+
+1) Preparar o projeto de testes
+
+No diretório da solução (onde está o .sln):
+
+### 1. Criar o projeto de testes (xUnit)
+dotnet new xunit -n Challenge_MOTTU.Tests
+
+### 2. Adicionar o projeto de testes à solution
+dotnet sln add Challenge_MOTTU.Tests/Challenge_MOTTU.Tests.csproj
+
+### 3. Referenciar o projeto principal (ajuste o caminho/nome se necessário)
+dotnet add Challenge_MOTTU.Tests reference Challenge-MOTTU/Challenge-MOTTU.csproj
+
+### 4. Adicionar pacotes úteis
+- dotnet add Challenge_MOTTU.Tests package Moq
+- dotnet add Challenge_MOTTU.Tests package FluentAssertions
+- dotnet add Challenge_MOTTU.Tests package Microsoft.AspNetCore.Mvc.Testing
+- dotnet add Challenge_MOTTU.Tests package Microsoft.EntityFrameworkCore.Sqlite
+- dotnet add Challenge_MOTTU.Tests package Microsoft.EntityFrameworkCore.InMemory
+- dotnet add Challenge_MOTTU.Tests package coverlet.collector
+
+
+2) Convenções e estrutura
+/Challenge_MOTTU.Tests
+  /Services
+    UsuarioServiceTests.cs
+    BikeServiceTests.cs
+    PendingServiceTests.cs
+
+## Padrão AAA (Arrange–Act–Assert) em todos os testes.
+
+## Como rodar os testes
+1) Via CLI (recomendado)
+
+No diretório da solução (.sln):
+
+## Restaurar dependências
+dotnet restore
+
+## Compilar em modo Release (opcional, mas comum em CI)
+dotnet build -c Release
+
+## Executar todos os testes da solução
+dotnet test -c Release
+
+## Rodar apenas um projeto de testes
+dotnet test ./Challenge_MOTTU.Tests/Challenge_MOTTU.Tests.csproj -c Release
+
+# COMO RODAR O PROJETO
 Abra o projeto no Visual Studio.
 
 Configure a string de conexão com o banco de dados no arquivo appsettings.json.
