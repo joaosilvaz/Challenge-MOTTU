@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Challenge_MOTTU.Controllers
 {
+    /// <summary>
+    /// Controller para gerenciamento da Prediction
+    /// </summary>
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/predict")]

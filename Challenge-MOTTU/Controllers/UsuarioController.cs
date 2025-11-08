@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers
 {
+    /// <summary>
+    /// Controller para gerenciamento de Usuários [api/v3]
+    /// </summary>
     [ApiController]
     [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/usuarios")]

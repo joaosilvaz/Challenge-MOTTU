@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers
 {
+    /// <summary>
+    /// Controller para gerenciamento de pendências das motos [api/v2]
+    /// </summary>s
     [ApiController]
     [ApiVersion("2.0")]
     [Route("api/v{version:apiversion}/pendings")]

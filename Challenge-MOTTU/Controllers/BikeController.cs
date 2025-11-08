@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers
 {
+    /// <summary>
+    /// Controller para gerenciamento das Motos [api/v1]
+    /// </summary>
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/bikes")]

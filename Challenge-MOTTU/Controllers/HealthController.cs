@@ -3,6 +3,9 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Challenge_MOTTU.Controllers
 {
+    /// <summary>
+    /// Controller para gerenciamento da API e Banco
+    /// </summary>
     [ApiController]
     [Route("health")]
     public class HealthController : ControllerBase

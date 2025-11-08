@@ -39,7 +39,11 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Trackfy API - Bike",
         Version = "v1",
-        Description = "API RESTful para gerenciamento de Bikes da Trackfy",
+        Description = "A Trackfy API é uma solução completa para o gerenciamento de bicicletas.\n" +
+                      "A versão 1 da API permite o cadastro, atualização, exclusão e consulta de bicicletas\n" +
+                      "utilizando recursos RESTful. Nosso objetivo é fornecer uma maneira fácil e eficiente\n" +
+                      "para os administradores do sistema gerenciarem o ciclo de vida das bicicletas, garantindo\n" +
+                      "que todos os dados estejam acessíveis e atualizados em tempo real.",
         Contact = new OpenApiContact
         {
             Name = "Equipe Trackfy",
@@ -52,7 +56,10 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Trackfy API - Pending",
         Version = "v2",
-        Description = "API RESTful para gerenciamento de Pendings da Trackfy",
+        Description = "A versão 2 da Trackfy API é focada no gerenciamento de pendências dentro do sistema.\n" +
+                      "Ela permite aos usuários e administradores controlar e resolver pendências de forma\n" +
+                      "centralizada e intuitiva. A API permite a visualização, criação, atualização e exclusão de\n" +
+                      "pendências, garantindo um fluxo de trabalho organizado e eficiente.",
         Contact = new OpenApiContact
         {
             Name = "Equipe Trackfy",
@@ -65,7 +72,11 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Trackfy API - Usuário",
         Version = "v3",
-        Description = "API RESTful para gerenciamento de Usuários da Trackfy",
+        Description = "A Trackfy API de Usuário é projetada para fornecer um conjunto completo de funcionalidades\n" +
+                      "para o gerenciamento de usuários dentro do sistema. A versão 3 da API permite a criação,\n" +
+                      "atualização e exclusão de perfis de usuário, além de permitir a autenticação, autorização e\n" +
+                      "gestão de permissões. O objetivo é garantir a segurança e a personalização da experiência\n" +
+                      "do usuário no sistema Trackfy.",
         Contact = new OpenApiContact
         {
             Name = "Equipe Trackfy",
@@ -73,8 +84,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 
-    // Documentação XML para summaries no Swagger
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+// Documentação XML para summaries no Swagger
+var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
     {
