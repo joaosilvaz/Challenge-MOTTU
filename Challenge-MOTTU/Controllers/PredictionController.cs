@@ -8,8 +8,7 @@ namespace Challenge_MOTTU.Controllers
     /// Controller para gerenciamento da Prediction
     /// </summary>
     [ApiController]
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/predict")]
+    [Route("/predict")]
     public class PredictionController : ControllerBase
     {
         private readonly RentalPredictionService _predictionService;
